@@ -1,14 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
 )
 
 type Task struct {
@@ -19,40 +17,7 @@ type Task struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-var db *sql.DB
-
 func main() {
-	// Database connection string
-	connStr := "postgres://renstask:your_password@localhost/renstask?sslmode=disable"
-
-	var err error
-	db, err = sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Test the connection
-	err = db.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Successfully connected to the database")
-
-	// Create tasks table if it doesn't exist
-	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS tasks (
-			id SERIAL PRIMARY KEY,
-			title TEXT NOT NULL,
-			completed BOOLEAN DEFAULT FALSE,
-			deadline TIMESTAMP,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		)
-	`)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// Set up router
 	r := mux.NewRouter()
 
